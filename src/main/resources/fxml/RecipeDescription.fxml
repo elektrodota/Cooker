@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.elektrodota.cooker.RecipeDescriptionController">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <Label text="Recipe name" />
+            <TextField fx:id="name" promptText="Write recipe name here" />
+            <Label text="Recipe descripton" />
+            <TextArea fx:id="description" prefHeight="200.0" prefWidth="200.0" promptText="Write recipe description here" />
+            <Label text="Preparation time in minutes" />
+            <TextField fx:id="preparationField" promptText="Preparation time " />
+            <Button fx:id="nextButton" mnemonicParsing="false" onAction="#nextAction" prefHeight="31.0" prefWidth="107.0" text="Next" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#backAction" prefHeight="43.0" prefWidth="106.0" text="Back to Main" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
