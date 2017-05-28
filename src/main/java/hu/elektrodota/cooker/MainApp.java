@@ -18,7 +18,7 @@ public class MainApp extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-        stage.setOnCloseRequest(e->this.closeEvent());
+        
         stage.setResizable(false);
     }
 
@@ -34,8 +34,6 @@ public class MainApp extends Application {
         launch(args);
     }
 
-    private void closeEvent() {
-        Platform.exit();
-    }
+  
 
 }

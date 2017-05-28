@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,17 +32,27 @@ public class MainSceneController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        
+
+    }
+
+    private void closeEvent(Event e) {
+
+        Platform.exit();
+    }
+
+    public void setupScene() {
+        quit.getScene().getWindow().setOnCloseRequest(this::closeEvent);
     }
 
     @FXML
     public void findAction() {
-         try {
+
+        this.setupScene();
+        try {
             Stage stage = (Stage) newRecipe.getScene().getWindow();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Searcher.fxml"));
             Parent root = (Parent) fxmlLoader.load();
-          
+
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -52,11 +63,14 @@ public class MainSceneController implements Initializable {
 
     @FXML
     public void newAction() {
+
+        this.setupScene();
         try {
+
             Stage stage = (Stage) newRecipe.getScene().getWindow();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/RecipeDescription.fxml"));
             Parent root = (Parent) fxmlLoader.load();
-          
+
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -64,10 +78,12 @@ public class MainSceneController implements Initializable {
             Logger.getLogger(MainSceneController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     @FXML
-    public void quitAction()
-    {
-       Platform.exit();
+    public void quitAction() {
+
+        this.setupScene();
+        Platform.exit();
     }
 
 }

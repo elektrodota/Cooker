@@ -18,13 +18,13 @@
         <!-- Used as the 'Vendor' for JNLP generation -->
         <name>Your Organisation</name>
     </organization>
-     <repositories>
+    <repositories>
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
-     <dependencies>
+    <dependencies>
        
         
         <dependency>
@@ -43,6 +43,17 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>5.4.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.4</version>
         </dependency>
         <dependency>
             <groupId>com.github.noraui</groupId>
@@ -84,7 +95,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                           <mainClass>${mainClass}</mainClass>
+                            <mainClass>${mainClass}</mainClass>
                             <executable>${java.home}/../bin/javafxpackager</executable>
                             <arguments>
                                 <argument>-createjar</argument>

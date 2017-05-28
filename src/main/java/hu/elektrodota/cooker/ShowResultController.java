@@ -38,18 +38,20 @@ public class ShowResultController implements Initializable {
     }
     @FXML
     Button backButton;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       backButton.setOnAction(this::backAction);
-       
-    }    
-    public void backAction(ActionEvent e)
-    {
-         try {
+        backButton.setOnAction(this::backAction);
+
+    }
+
+    public void backAction(ActionEvent e) {
+        try {
             Stage stage = (Stage) backButton.getScene().getWindow();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Searcher.fxml"));
+
             Parent root = (Parent) fxmlLoader.load();
-          
+
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -57,7 +59,5 @@ public class ShowResultController implements Initializable {
             Logger.getLogger(MainSceneController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-  
-    
-    
+
 }

@@ -36,7 +36,8 @@ public class SearcherController implements Initializable {
     @FXML
     TableView table;
     @FXML
-    TextField recipeName;
+    TextField recipeName,ingredientName;
+    
     /**
      * Initializes the controller class.
      */
@@ -97,7 +98,8 @@ public class SearcherController implements Initializable {
     }
 
     private void searchAction(ActionEvent e) {
-        List<Receptek> r = fr.searchNamebyName(recipeName.getText(),recipeName.getText());
+        table.getItems().remove(0, table.getItems().size());
+        List<Receptek> r = fr.searchNamebyName(recipeName.getText(),ingredientName.getText());
         table.getItems().addAll(r);
 
     }

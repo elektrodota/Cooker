@@ -6,6 +6,7 @@
 package hu.elektrodota.cooker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
 
 /**
  *
@@ -27,27 +29,60 @@ public class FullRecept {
     ArrayList<ReceptLepesek> receptLepesek = new ArrayList<ReceptLepesek>();
     ;
 
-    EntityManagerFactory factory;
+    EntityManagerFactory factory=Persistence.createEntityManagerFactory("Hozzavalok");;
     EntityManager em;
 
-    
     public List<Receptek> searchNamebyName(String data, String hozzavalok) {
-        factory = Persistence.createEntityManagerFactory("Hozzavalok");
+        
         em = factory.createEntityManager();
-        Query q = em.createQuery("Select r from Receptek r where r.receptNev like :name");
+        String[] split = hozzavalok.split(",");
+        ArrayList<String> that = new ArrayList<>();
+        Query q;
+        List<Long> resultList = new ArrayList<>();
+        if (split.length != 0) {
+            q = em.createQuery("select h.receptId from ReceptHozzavalok as h where h.hozzavaloNeve in :hv ");
+
+            if (split.length == 0) {
+                that.add("%");
+            }
+            for (String split1 : split) {
+                that.add(split1);
+            }
+            q.setParameter("hv", that);
+            resultList = q.getResultList();
+
+        }
+        q = em.createQuery("select r from Receptek r where r.receptNev like :name ");
+
         q.setParameter("name", '%' + data + '%');
-        List<Receptek> resultList = q.getResultList();
-        
-        
-       
+
+        List<Receptek> resultLista = q.getResultList();
+        List<Receptek> resultList1 = new ArrayList<>();
+        if (resultList.size() == 0 && !hozzavalok.equals("")) {
+            return new ArrayList<Receptek>();
+        }
+        if (resultList.size() != 0) {
+            for (int i = 0; i < resultLista.size(); i++) {
+                if (resultList.contains(resultLista.get(i).getReceptId())) {
+                    resultList1.add(resultLista.get(i));
+                }
+
+            }
+        } else {
+
+            for (Receptek r : resultLista) {
+                resultList1.add(r);
+            }
+        }
+
         em.close();
-        factory.close();
-        return resultList;
+        
+        return resultList1;
     }
 
     public String searchEverything(long id) {
 
-        factory = Persistence.createEntityManagerFactory("Hozzavalok");
+        //factory = Persistence.createEntityManagerFactory("Hozzavalok");
         em = factory.createEntityManager();
 
         Query q = em.createQuery("Select r from ReceptHozzavalok r where r.receptId=:id");
@@ -63,6 +98,8 @@ public class FullRecept {
         Receptek r = (Receptek) q.getSingleResult();
         sb.append("Recipe name: \n");
         sb.append(r.getReceptNev() + "\n");
+        sb.append("Preparation time:\n");
+        sb.append(r.getElkeszitesiIdo() + "\n");
 
         sb.append("Ingredients: \n");
         for (int i = 0; i < resultList.size(); i++) {
@@ -76,8 +113,29 @@ public class FullRecept {
         return sb.toString();
     }
 
+    public void deleteRecipe(long id)
+    {
+        em=factory.createEntityManager();
+        
+        em.getTransaction().begin();
+        Query q=em.createQuery("Delete from Receptek r where r.receptId=:id ");
+        q.setParameter("id", id);
+         int rows = q.executeUpdate();
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        q=em.createQuery("Delete from ReceptLepesek r where r.receptId=:id");
+        q.setParameter("id", id);
+        rows = q.executeUpdate();
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        q=em.createQuery("Delete from ReceptHozzavalok r where r.receptId=:id");
+        q.setParameter("id", id);
+        rows = q.executeUpdate();
+        em.getTransaction().commit();
+        em.close();
+    }
     public void loadUpAll() {
-        factory = Persistence.createEntityManagerFactory("Hozzavalok");
+        
         em = factory.createEntityManager();
         em.getTransaction().begin();
         em.persist(recept);
@@ -105,7 +163,6 @@ public class FullRecept {
         }
         em.getTransaction().commit();
         em.close();
-        factory.close();
 
     }
 

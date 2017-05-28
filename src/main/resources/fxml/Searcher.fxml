@@ -13,6 +13,6 @@
       <Button fx:id="backButton" layoutX="13.0" layoutY="355.0" mnemonicParsing="false" text="Back" />
       <TableView fx:id="table" layoutX="4.0" layoutY="117.0" prefHeight="236.0" prefWidth="594.0" />
       <Button fx:id="detailButton" layoutX="489.0" layoutY="355.0" mnemonicParsing="false" text="View details" />
-      <TextField fx:id="ingredientName" layoutX="3.0" layoutY="24.0" prefHeight="31.0" prefWidth="594.0" promptText="ingredient names separated by comma " />
+      <TextField fx:id="ingredientName" layoutX="3.0" layoutY="24.0" prefHeight="31.0" prefWidth="594.0" promptText="Ingredients separated by comma" />
    </children>
 </AnchorPane>
