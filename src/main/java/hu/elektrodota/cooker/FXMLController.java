@@ -45,18 +45,20 @@ public class FXMLController implements Initializable {
     TextField IngredientField, quantityField;
     @FXML
     Button addButton, removeButton, next, backButton;
-    FullRecept fullrecept;
+    Service service;
 
-    public FullRecept getFullrecept() {
-        return fullrecept;
+    public Service getService() {
+        return service;
     }
 
-    public void setFullrecept(FullRecept fullrecept) {
-        this.fullrecept = fullrecept;
-        for (int i = 0; i < fullrecept.getReceptHozzavalok().size(); i++) {
-            table.getItems().add(fullrecept.getReceptHozzavalok().get(i));
+    public void setService(Service service) {
+        this.service = service;
+        for(int i=0;i<service.getFr().getReceptHozzavalok().size();i++)
+        {
+            table.getItems().add(service.getFr().getReceptHozzavalok().get(i));
         }
     }
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -101,16 +103,16 @@ public class FXMLController implements Initializable {
             } else {
                 lista = new ArrayList<>(items);
             }
-            fullrecept.setReceptHozzavalok(lista);
+            service.getFr().setReceptHozzavalok(lista);
 
             for (int i = 0; i < items.size(); i++) {
 
                 Hozzavalok h = new Hozzavalok();
                 h.setHozzavaloNeve(items.get(i).getHozzavaloNeve());
-                fullrecept.getHozzavalok().add(h);
+                service.getFr().getHozzavalok().add(h);
 
             }
-            controller.setRecipe(fullrecept);
+            controller.setService(service);
             window.setScene(new Scene(root));
         } catch (IOException ex) {
             Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);

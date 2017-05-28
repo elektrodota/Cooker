@@ -46,19 +46,21 @@ public class StepsController implements Initializable {
     @FXML
     private TextField description;
 
-    FullRecept recipe;
-
-    public FullRecept getRecipe() {
-        return recipe;
+    public Service getService() {
+        return service;
     }
 
-    public void setRecipe(FullRecept recipe) {
-
-        this.recipe = recipe;
-        for (int i = 0; i < recipe.getReceptLepesek().size(); i++) {
-            table.getItems().add(recipe.getReceptLepesek().get(i));
+    public void setService(Service service) {
+        this.service = service;
+        for(int i=0;i<service.getFr().getReceptLepesek().size();i++)
+        {
+            table.getItems().add(service.getFr().getReceptLepesek().get(i));
         }
     }
+    
+    Service service;
+    
+  
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -84,14 +86,16 @@ public class StepsController implements Initializable {
         } else {
             lista = new ArrayList<>(items);
         }
-        recipe.setReceptLepesek(lista);
-        recipe.loadUpAll();
+        service.getFr().setReceptLepesek(lista);
+        service.loadUp();
         Stage stage = (Stage) Next.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainScene.fxml"));
+        
         Parent root;
         try {
             root = (Parent) fxmlLoader.load();
-
+            MainSceneController controller = fxmlLoader.<MainSceneController>getController();
+            controller.setSr(service);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -142,8 +146,8 @@ public class StepsController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Scene.fxml"));
             Parent root = (Parent) fxmlLoader.load();
             FXMLController controller = fxmlLoader.<FXMLController>getController();
-            recipe.getReceptLepesek();
-            recipe.setReceptLepesek(new ArrayList<ReceptLepesek>());
+            service.getFr().getReceptLepesek();
+             service.getFr().setReceptLepesek(new ArrayList<ReceptLepesek>());
             List<ReceptLepesek> items = table.getItems();
 
             ArrayList<ReceptLepesek> lista;
@@ -153,9 +157,9 @@ public class StepsController implements Initializable {
                 lista = new ArrayList<>(items);
             }
 
-            recipe.setReceptLepesek(lista);
+            service.getFr().setReceptLepesek(lista);
 
-            controller.setFullrecept(recipe);
+            controller.setService(service);
             window.setScene(new Scene(root));
         } catch (IOException ex) {
             Logger.getLogger(FXMLController.class.getName()).log(Level.SEVERE, null, ex);

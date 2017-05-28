@@ -36,22 +36,30 @@ public class SearcherController implements Initializable {
     @FXML
     TableView table;
     @FXML
-    TextField recipeName,ingredientName;
-    
+    TextField recipeName, ingredientName;
+
     /**
      * Initializes the controller class.
      */
-    FullRecept fr = new FullRecept();
+    Service service;
+
+    public Service getService() {
+        return service;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         TableColumn<Receptek, String> name = new TableColumn<>("Recipe name");
         name.setCellValueFactory(new PropertyValueFactory<Receptek, String>("receptNev"));
-        name.setPrefWidth(table.getPrefWidth() * 1.0/3);
+        name.setPrefWidth(table.getPrefWidth() * 0.5);
         TableColumn<Receptek, String> desc = new TableColumn<>("Recipe description");
         desc.setCellValueFactory(new PropertyValueFactory<Receptek, String>("receptLeiras"));
-        desc.setPrefWidth(table.getPrefWidth() * 1.0/3);
-        
+        desc.setPrefWidth(table.getPrefWidth() * 0.5);
+
         table.getColumns().addAll(name, desc);
         backButton.setOnAction(this::backAction);
         detailButton.setOnAction(this::detailAction);
@@ -63,7 +71,8 @@ public class SearcherController implements Initializable {
             Stage stage = (Stage) backButton.getScene().getWindow();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainScene.fxml"));
             Parent root = (Parent) fxmlLoader.load();
-            
+            MainSceneController controller = fxmlLoader.<MainSceneController>getController();
+            controller.setSr(service);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -74,32 +83,31 @@ public class SearcherController implements Initializable {
 
     private void detailAction(ActionEvent e) {
         Receptek selectedItem = (Receptek) table.getSelectionModel().getSelectedItem();
-       
-        
-        if(selectedItem!=null)
-        {
-            List<Receptek> searchNamebyName = fr.searchNamebyName(selectedItem.getReceptNev(),recipeName.getText());
-            selectedItem=searchNamebyName.get(0);
-            String searchEverything = fr.searchEverything(selectedItem.getReceptId());
+
+        if (selectedItem != null) {
+            List<Receptek> searchNamebyName = service.search(selectedItem.getReceptNev(), null);
+            selectedItem = searchNamebyName.get(0);
+            String searchEverything = service.getBackTheRecipe(selectedItem.getReceptId());
             try {
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ShowResult.fxml"));
-            Parent root = (Parent) fxmlLoader.load();
+                Stage stage = (Stage) backButton.getScene().getWindow();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ShowResult.fxml"));
+                Parent root = (Parent) fxmlLoader.load();
                 ShowResultController controller = fxmlLoader.getController();
                 controller.setResultArea(searchEverything);
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            Logger.getLogger(MainSceneController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-            
+                controller.setService(service);
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException ex) {
+                Logger.getLogger(MainSceneController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
     }
 
     private void searchAction(ActionEvent e) {
         table.getItems().remove(0, table.getItems().size());
-        List<Receptek> r = fr.searchNamebyName(recipeName.getText(),ingredientName.getText());
+        List<Receptek> r = service.search(recipeName.getText(), ingredientName.getText());
         table.getItems().addAll(r);
 
     }

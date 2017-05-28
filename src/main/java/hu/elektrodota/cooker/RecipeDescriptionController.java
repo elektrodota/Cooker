@@ -34,11 +34,19 @@ public class RecipeDescriptionController implements Initializable {
     private TextField name,preparationField;
     @FXML
     private TextArea description;
-    FullRecept fullRecept;
+    Service service;
+
+    public Service getService() {
+        return service;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        fullRecept = new FullRecept();
+      
     }
 
     @FXML
@@ -55,8 +63,8 @@ public class RecipeDescriptionController implements Initializable {
             recept.setReceptLeiras(description.getText());
             recept.setReceptNev(name.getText());
             recept.setElkeszitesiIdo(Integer.parseInt(preparationField.getText()));
-            fullRecept.setRecept(recept);
-            controller.setFullrecept(fullRecept);
+            service.getFr().setRecept(recept);
+            controller.setService(service);
             window.setScene(new Scene(root));
         } catch (IOException ex) {
             Logger.getLogger(RecipeDescriptionController.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,7 +77,10 @@ public class RecipeDescriptionController implements Initializable {
         try {
             Stage window = (Stage) name.getScene().getWindow();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainScene.fxml"));
+            
             Parent root=(Parent) fxmlLoader.load();
+            MainSceneController controller = fxmlLoader.<MainSceneController>getController();
+            controller.setSr(service);
             window.setScene(new Scene(root));
         } catch (IOException ex) {
             Logger.getLogger(RecipeDescriptionController.class.getName()).log(Level.SEVERE, null, ex);

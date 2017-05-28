@@ -32,7 +32,15 @@ public class ShowResultController implements Initializable {
      */
     @FXML
     TextArea resultArea;
+    Service service;
 
+    public Service getService() {
+        return service;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
+    }
     public void setResultArea(String resultArea) {
         this.resultArea.setText(resultArea);
     }
@@ -51,7 +59,8 @@ public class ShowResultController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Searcher.fxml"));
 
             Parent root = (Parent) fxmlLoader.load();
-
+            SearcherController controller = fxmlLoader.<SearcherController>getController();
+            controller.setService(service);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();

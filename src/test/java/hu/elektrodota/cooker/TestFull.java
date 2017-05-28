@@ -7,38 +7,70 @@ package hu.elektrodota.cooker;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+
 /**
  *
  * @author elefank
  */
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
 public class TestFull {
-    @Spy
-    FullRecept fr=new FullRecept();
-   
+
+    
+    FullRecept fr;
+    static Service service;
+
+    @BeforeClass
+    public static void setup()
+    {
+        service=new Service();
+    }
+
     @Test
-    public void testFullReceptSearchNameByName() {
-     fr.searchNamebyName("a", "b");
-     Mockito.verify(fr).searchNamebyName("a","b");
+    public void testSearchJustByName() {
+        fr = Mockito.mock(FullRecept.class);
+        
+        service.setFr(fr);
+        service.search("", null);
+        Mockito.verify(fr).searchJustByName("");
+
+    }
+
+    @Test
+    public void testSearchByNameByName() {
+        fr = Mockito.mock(FullRecept.class);
+        service.setFr(fr);
+        service.search("", "Víz");
+        Mockito.verify(fr).searchNamebyName("", "Víz");
+      
     }
     @Test
     public void testFullReceptSearchByEverything()
     {
-        if(fr.searchNamebyName("", "").size()>0)
+        fr = Mockito.mock(FullRecept.class);
+        service.setFr(fr);
+        List<Receptek> search = service.search("", "%");
+        if(search.size()>0)
         {
-            long id=fr.searchNamebyName("", "").get(0).getReceptId();
-            fr.searchEverything(id);
+            long id=search.get(0).getReceptId();
+            service.getBackTheRecipe(id);
             Mockito.verify(fr).searchEverything(id);
         }
     }
     @Test
     public void testFullReceptInsertAll()
     {
+        fr = Mockito.mock(FullRecept.class);
+        
+        
         ArrayList<ReceptHozzavalok> rh=new ArrayList<>();
         ReceptHozzavalok r=new ReceptHozzavalok();
         r.setHozzavaloNeve("Vaj");
@@ -55,12 +87,15 @@ public class TestFull {
         ArrayList<ReceptLepesek> rlList=new ArrayList<ReceptLepesek>();
         rlList.add(rl);
         fr.setReceptLepesek(rlList);
-        fr.loadUpAll();
+        
+        service.setFr(fr);
+        service.loadUp();
+        
         Mockito.verify(fr).loadUpAll();
-        List<Receptek> searchNamebyName = fr.searchNamebyName(receptek.getReceptNev(),"");
+        List<Receptek> searchNamebyName = service.search(receptek.getReceptNev(), null);
        for(Receptek  rp:searchNamebyName)
        {
-           fr.deleteRecipe(rp.getReceptId());
+           service.deleteFromDatabase(rp.getReceptId());
        }
     }
 }

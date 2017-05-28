@@ -8,18 +8,35 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 public class MainApp extends Application {
-
+     static Service service;
     @Override
     public void start(Stage stage) throws Exception {
+        service=new Service();
+        
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainScene.fxml"));
         Parent root = (Parent) fxmlLoader.load();
+        MainSceneController controller = fxmlLoader.<MainSceneController>getController();
+        controller.setSr(service);
         Scene scene = new Scene(root);
+        stage.setOnCloseRequest(this::close);
         stage.setScene(scene);
         stage.show();
         
         stage.setResizable(false);
+    }
+ 
+    public  void close(WindowEvent e)
+    {
+        service.getFr().getFactory().close();
+        Platform.exit();
+        System.exit(0);
+        
     }
 
     /**
